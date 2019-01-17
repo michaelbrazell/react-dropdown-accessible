@@ -14,6 +14,9 @@ class Dropdown extends Component {
       },
       isOpen: false
     }
+    // create a ref to store the textInput DOM element
+    this.selectOption = React.createRef();
+    // this.focusSelectOption = this.focusSelectOption.bind(this);
     this.mounted = true
     this.handleDocumentClick = this.handleDocumentClick.bind(this)
     this.fireChangeEvent = this.fireChangeEvent.bind(this)
@@ -84,19 +87,10 @@ class Dropdown extends Component {
       event.preventDefault()
       return false
     } else if (event.which === 40) {
-      options.map(function(option, index, array) {
-        if (value === option) {
-          this.setFocus(array[index+1], array[index+1])
-        }
-      }, this)
+      this.setFocus(value, label)
       event.preventDefault()
     } else if (event.which === 38) {
-      options.map(function(option, index, array) {
-        if (value === option) {
-          // console.log(option, index, array[index-1])
-          this.setValue(array[index-1], array[index-1])
-        }
-      }, this)
+      this.setFocus(value, label)
       event.preventDefault()
     } else if (event.which === 27) {
       this.setState({
@@ -126,16 +120,9 @@ class Dropdown extends Component {
   }
 
   setFocus (value, label) {
-    // This is the same as setValue for now
-    // But it keeps the menu open, need to shift
-    let newState = {
-      selected: {
-        value,
-        label},
-      isOpen: true
-    }
-    this.fireChangeEvent(newState)
-    this.setState(newState)
+    console.log('Set focus? ' + value, label)
+    console.log(this.selectOption)
+    this.selectOption.current.focus(this);
   }
 
   setValue (value, label) {
@@ -181,6 +168,7 @@ class Dropdown extends Component {
         role='option'
         aria-selected={isSelected ? 'true' : 'false'}
         tabIndex="0"
+        ref={this.selectOption}
         >
         {label}
       </div>
