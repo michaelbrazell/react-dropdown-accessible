@@ -12,9 +12,10 @@ class Dropdown extends Component {
         label: typeof props.placeholder === 'undefined' ? DEFAULT_PLACEHOLDER_STRING : props.placeholder,
         value: '',
       },
-      isOpen: false
+      isOpen: false,
+      focusIndex: 0
     }
-    // create a ref to store the textInput DOM element
+    // create a ref to store the select DOM element
     this.selectOption = React.createRef();
     // this.focusSelectOption = this.focusSelectOption.bind(this);
     this.mounted = true
@@ -79,18 +80,18 @@ class Dropdown extends Component {
   }
 
   handleOptionKeyDown (value, label, event) { 
-    let options = this.props.options
+    
+    
     // 13 = Enter; 40 = down; 38 = up
     if (event.which === 13) {
       this.setValue(value, label)
-
       event.preventDefault()
       return false
-    } else if (event.which === 40) {
-      this.setFocus(value, label)
-      event.preventDefault()
     } else if (event.which === 38) {
-      this.setFocus(value, label)
+      this.decrementFocus(value, label)
+      event.preventDefault()
+    } else if (event.which === 40) {
+      this.incrementFocus(value, label)
       event.preventDefault()
     } else if (event.which === 27) {
       this.setState({
@@ -119,10 +120,31 @@ class Dropdown extends Component {
     return option || value
   }
 
-  setFocus (value, label) {
-    console.log('Set focus? ' + value, label)
-    console.log(this.selectOption)
-    this.selectOption.current.focus(this);
+  incrementFocus (value, label) {
+    let index = this.state.focusIndex;
+    
+    this.setState(prevState => {
+      return {focusIndex: prevState.focusIndex + 1}
+    })
+    console.log(this.state.focusIndex)
+    console.log(this.selectOption.current.offsetParent.children[this.state.focusIndex])
+    
+    this.selectOption.current.offsetParent.children[this.state.focusIndex].focus(this)  
+
+  }
+
+  decrementFocus (value, label) {
+    let index = this.state.focusIndex;
+    
+    this.setState(prevState => {
+      return {focusIndex: prevState.focusIndex - 1}
+    })
+    
+    console.log(this.state.focusIndex)
+    console.log(this.selectOption.current.offsetParent.children[this.state.focusIndex])
+    
+    this.selectOption.current.offsetParent.children[this.state.focusIndex].focus(this)  
+
   }
 
   setValue (value, label) {
