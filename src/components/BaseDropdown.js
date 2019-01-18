@@ -80,18 +80,22 @@ class Dropdown extends Component {
   }
 
   handleOptionKeyDown (value, label, event) { 
-    
-    
-    // 13 = Enter; 40 = down; 38 = up
+    let options = this.selectOption.current.offsetParent.children,
+        optionsLength = options.length - 1;
+    // 13 = Enter; 38 = up; 40 = down; 27 = esc;
     if (event.which === 13) {
       this.setValue(value, label)
       event.preventDefault()
       return false
     } else if (event.which === 38) {
-      this.decrementFocus(value, label)
+      if (this.state.focusIndex > 0) {
+        this.decrementFocus(options)
+      }
       event.preventDefault()
     } else if (event.which === 40) {
-      this.incrementFocus(value, label)
+      if (this.state.focusIndex < optionsLength) {
+        this.incrementFocus(options)
+      }
       event.preventDefault()
     } else if (event.which === 27) {
       this.setState({
@@ -120,31 +124,23 @@ class Dropdown extends Component {
     return option || value
   }
 
-  incrementFocus (value, label) {
-    let index = this.state.focusIndex;
-    
+  incrementFocus (options) {
     this.setState(prevState => {
       return {focusIndex: prevState.focusIndex + 1}
     })
-    console.log(this.state.focusIndex)
-    console.log(this.selectOption.current.offsetParent.children[this.state.focusIndex])
-    
-    this.selectOption.current.offsetParent.children[this.state.focusIndex].focus(this)  
-
+    setTimeout( () => {
+      options[this.state.focusIndex].focus()  
+    }, 30);
   }
 
-  decrementFocus (value, label) {
-    let index = this.state.focusIndex;
-    
+  decrementFocus (options) {
     this.setState(prevState => {
       return {focusIndex: prevState.focusIndex - 1}
     })
-    
-    console.log(this.state.focusIndex)
-    console.log(this.selectOption.current.offsetParent.children[this.state.focusIndex])
-    
-    this.selectOption.current.offsetParent.children[this.state.focusIndex].focus(this)  
-
+    setTimeout( () => {
+      options[this.state.focusIndex].focus()  
+    }, 30);
+   
   }
 
   setValue (value, label) {
